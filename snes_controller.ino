@@ -1,6 +1,7 @@
 /*
-SNES -> Jamma/Neo Geo DB15
-Robin Edwards 2018
+SNES -> JAMMA
+antilad 2020
+forked from Robin Edwards' SNES-to-NeoGeo project 2018
 based on the code found at https://github.com/burks10/Arduino-SNES-Controller
 */
 
@@ -36,19 +37,21 @@ Arduino -> DB15
  --------      -------
  1 (GND)       GND
  8 (+5V)       +5V
- 3 (Sel)       D2
+ 3 (Coin)      D2
  11 (Start)    D3
  15 (Up)       D4
  7 (Down)      D5
  14 (Left)     D6
  6 (Right)     D7
- 13 (A)        D8
- 5 (B)         D9
- 12 (C)        D10
- 4 (D)         D11
+ 13 (1)        D8
+ 5 (2)         D9
+ 12 (3)        D10
+ 4 (4)         D11
+ 10 (5)        D12
+ 2 (6)         D13
 */
 
-#define PIN_SELECT  2
+#define PIN_COIN    2
 #define PIN_START   3
 #define PIN_UP      4
 #define PIN_DOWN    5
@@ -58,12 +61,12 @@ Arduino -> DB15
 #define PIN_BUT2    9
 #define PIN_BUT3    10
 #define PIN_BUT4    11
-
-#define PIN_LED      13
+#define PIN_BUT5    12
+#define PIN_BUT6    13
 
 int buttons_state[12];  // B,Y,Sel,Start,U,D,L,R,A,X,L,R
-int output_pins[12] = { PIN_BUT2, PIN_BUT3, PIN_SELECT, PIN_START, PIN_UP, PIN_DOWN,
-                        PIN_LEFT, PIN_RIGHT, PIN_BUT1, PIN_BUT4, 0, 0 };
+int output_pins[12] = { PIN_BUT4, PIN_BUT1, PIN_COIN, PIN_START, PIN_UP, PIN_DOWN,
+                        PIN_LEFT, PIN_RIGHT, PIN_BUT5, PIN_BUT2, PIN_BUT3, PIN_BUT6 };
 void setup ()
 {
     pinMode(DATA_CLOCK, OUTPUT);
@@ -73,8 +76,6 @@ void setup ()
     digitalWrite(DATA_LATCH, LOW);
     
     pinMode(DATA_SERIAL, INPUT_PULLUP);
-    
-    pinMode(PIN_LED, OUTPUT);
 }
 
 void loop ()
@@ -113,12 +114,6 @@ void loop ()
                 pinMode(output_pins[i], INPUT);            
         }
     }
-
-    // Output select/coin button to built-in LED
-    if (!buttons_state[2])
-        digitalWrite(PIN_LED, HIGH);
-    else
-        digitalWrite(PIN_LED, LOW);
     
     delay(5);
 }
